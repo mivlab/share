@@ -71,18 +71,18 @@ def strategy_mean(confidence_array, p_array, g_array_dir, n):
     g_array_one = np.mean(g_array_dir, axis=0)
     for m in range(len(p_array)):
         confidence = np.dot(p_array[m], g_array_one) / (np.linalg.norm(p_array[m]) * (np.linalg.norm(g_array_one)))
-        confidence_array[m][n] = np.around(confidence, decimals=5)
+        confidence_array[m][n] = np.around(confidence, decimals=3)
     return confidence_array
 
 
-def strategy_min(confidence_array, p_array, g_array_dir, n):
+def strategy_max(confidence_array, p_array, g_array_dir, n):
     for m in range(len(p_array)):
         confidence_max = 0
         for z in range(len(g_array_dir)):
             confidence = np.dot(p_array[m], g_array_dir[z]) / (np.linalg.norm(p_array[m]) * (np.linalg.norm(g_array_dir[z])))
             if confidence > confidence_max:
                 confidence_max = confidence
-        confidence_array[m][n] = np.around(confidence_max, decimals=5)
+        confidence_array[m][n] = np.around(confidence_max, decimals=3)
     return confidence_array
 
 
@@ -109,7 +109,7 @@ def test(path):
         img_tensor = transforms.ToTensor()(img).unsqueeze(0)
         feature, out = model(Variable(img_tensor.cuda()))
         p_array[i] = feature.cpu().detach().numpy()
-
+        
     # gallery && confidence[m][n]
     list_gallery = os.listdir(os.path.join(path, 'gallery'))
     confidence_array = np.zeros((len(p_array), len(list_gallery)), dtype=np.float)
@@ -122,7 +122,7 @@ def test(path):
             feature, out = model(Variable(img_tensor.cuda()))
             g_array_dir[i] = feature.cpu().detach().numpy()
         # confidence_array = strategy_mean(confidence_array, p_array, g_array_dir, n)
-        confidence_array = strategy_min(confidence_array, p_array, g_array_dir, n)
+        confidence_array = strategy_max(confidence_array, p_array, g_array_dir, n)
 
     # 将结果写入csv文件中
     with open('output/test.csv', 'w', newline='') as csvfile:
@@ -131,11 +131,11 @@ def test(path):
             line = {}
             write_line = [p_name[m]]
             for n in range(confidence_array.shape[1]):
-                line[confidence_array[m][n]] = ('000' + str(n))[-4:]
-            line_key = sorted(line, reverse=True)
-            for t in range(len(line_key)):
-                write_line.append(line[line_key[t]])
-                write_line.append(line_key[t])
+                line[('000' + str(n))[-4:]] = confidence_array[m][n]
+            line_reverse = sorted(line.items(), key=lambda x: x[1], reverse=True)
+            for t in range(len(line)):
+                write_line.append(line_reverse[t][0])
+                write_line.append(line_reverse[t][1])
             writer.writerow(write_line)
     return p_name
 
