@@ -13,7 +13,7 @@ from models.cnn import Net
 
 parser = argparse.ArgumentParser(description='PyTorch MNIST Example') #创建解析器
 parser.add_argument('--datapath', required=True, help='data path')
-parser.add_argument('--batch_size', type=int, default=32, help='training batch size')
+parser.add_argument('--batch_size', type=int, default=96, help='training batch size')
 parser.add_argument('--epochs', type=int, default=30, help='number of epochs to train')
 parser.add_argument('--no_cuda', default=True, help='disables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S', help='random seed (default: 1)') #增加命令行
@@ -31,7 +31,6 @@ def train():
     os.makedirs('./output', exist_ok=True) #用于递归创建目录
     if not os.path.exists('output/total.txt'):
         ml.image_list(args.datapath, 'output/total.txt')
-        (args.datapath, 'output/total.txt')
         ml.shuffle_split('output/total.txt', 'output/train.txt', 'output/val.txt')
 
     train_data = ml.MyDataset(txt='output/train.txt', transform=transforms.ToTensor())

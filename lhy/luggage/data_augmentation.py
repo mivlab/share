@@ -4,7 +4,7 @@ from PIL import Image
 import random
 import numpy as np
 
-datapath = r'D:\workplace\data\jian'
+datapath = r'D:\Image\Image_data\train'
 
 for dir in sorted(os.listdir(datapath)):
     #print(dir)
