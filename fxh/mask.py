@@ -16,7 +16,7 @@ for dir_name in list_path:#抽取每类一张图作为被遮挡的图，这里�
     for name in sample: #遍历一定数量的被遮挡图
         img1_path = path + '/' + str(dir_name)
         img1 = cv.imread(img1_path+'/'+str(name))
-        #cv.imshow("img1",img1)
+        cv.imshow("img1",img1)
         #rand_pic_file = str(random.sample(list_path, 1))[2:6]#在除其他类里随机抽取一个类，取其名字
     while True:
         while((str(random.sample(list_path, 1))[2:6])!= str(dir_name)):#判断该类是否与被遮挡图的类相同
@@ -27,11 +27,12 @@ for dir_name in list_path:#抽取每类一张图作为被遮挡的图，这里�
                 if str(rand_pic)[2:4]!='H_':
                     for rand_name in rand_pic:
                         img2=cv.imread(path+'/'+str(rand_pic_file)+'/'+str(rand_name))
-                        #cv.imshow('img2',img2)
+                        cv.imshow('img2',img2)
                         height,width=img2.shape[:2]
                         size=(int(width*0.5),int(height*0.5))
                         shrink=cv.resize(img2,size)
                     break
+            break
         with open(r'E:\MVB_train\MVB_train\Info\train.json', 'r', encoding='utf-8') as f:  # 读json文件
             for line in f:
                 json_dict = json.loads(line)
