@@ -120,6 +120,11 @@ def gen_rect(p1, p2, w, h, n):
         i = i + 1
     return rects
 
+def rotate_image(img):
+    return img
+def rotate_points(pts):
+    return pts
+
 def gen_sample(list_file, num, box, target):
     """
     生成训练样本，存到指定目录下。
@@ -142,7 +147,9 @@ def gen_sample(list_file, num, box, target):
         save_path = os.path.join(target, c)
         os.makedirs(save_path, exist_ok=True)
         print('%d / %d' % (n, len(names)))
-        for pts in pts_total:
+        for j, pts in enumerate(pts_total):
+            img = rotate_image(img)
+            pts = rotate_points(pts)
             pts_ = np.array(pts, dtype=np.int32)
             x1, y1 = np.min(pts_, 0)
             x2, y2 = np.max(pts_, 0)
@@ -150,7 +157,7 @@ def gen_sample(list_file, num, box, target):
             rects = gen_rect((x1, y1), (x2, y2), img.shape[1], img.shape[0], num)
             for i, rect in enumerate(rects):
                 img_ = cv2.resize(img[rect[1]:rect[3], rect[0]:rect[2]], (box, box))
-                out_name = os.path.basename(image_name)[0:-4] + '_%d.jpg' % i
+                out_name = os.path.basename(image_name)[0:-4] + '_%d_%d.jpg' % (j, i)
                 cv2.imwrite(os.path.join(save_path, out_name), img_)
         #cv2.imshow('img', img)
         #cv2.waitKey()
