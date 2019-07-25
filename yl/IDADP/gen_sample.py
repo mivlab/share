@@ -162,5 +162,5 @@ if __name__ == '__main__':
     os.makedirs(target_train, exist_ok=True)
     os.makedirs(target_val, exist_ok=True)
     train_val_split(source_root, 'train.txt', 'val.txt')
-    gen_sample('train.txt', 2, 224, target_train)
-    gen_sample('val.txt', 2, 224, target_val)
+    gen_sample('train.txt', 50, 224, target_train)
+    gen_sample('val.txt', 50, 224, target_val)
