@@ -26,12 +26,22 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
     torch.backends.cudnn.benchmark = True  #增加程序的运行效率
 
+def image_list_id(imageRoot, txt='list.txt'):
+    f = open(txt, 'wt')
+    for (label, filename) in enumerate(sorted(os.listdir(imageRoot), reverse=False)):
+        if os.path.isdir(os.path.join(imageRoot, filename)):
+            for imagename in os.listdir(os.path.join(imageRoot, filename)):
+                name, ext = os.path.splitext(imagename)
+                ext = ext[1:]
+                if ext == 'jpg' or ext == 'png' or ext == 'bmp':
+                    f.write('%s %d\n' % (os.path.join(imageRoot, filename, imagename), int(filename)))
+    f.close()
+
 
 def train():
     os.makedirs('./output', exist_ok=True) #用于递归创建目录
-    if not os.path.exists('output/total.txt'):
-        ml.image_list(args.datapath, 'output/total.txt')
-        ml.shuffle_split('output/total.txt', 'output/train.txt', 'output/val.txt')
+    image_list_id(r'C:\data\MVB_train\train_224', 'output/train.txt')
+    image_list_id(r'C:\data\MVB_train\val_224', 'output/val.txt')
 
     train_data = ml.MyDataset(txt='output/train.txt', transform=transforms.ToTensor())
     val_data = ml.MyDataset(txt='output/val.txt', transform=transforms.ToTensor())
