@@ -157,7 +157,7 @@ def gen_sample(path, dst_path, box):
             img = cv2.imread(os.path.join(path, dir, name))
             h, w, c = img.shape
             lmax = max(h, w)
-            for j in range(15):
+            for j in range(10):
                 base = [0, 90, 180, 270]
                 base_i = random.randint(0, 3)
                 angle = int(random.normalvariate(0, 0.5) * 30) + base[base_i]
@@ -168,7 +168,7 @@ def gen_sample(path, dst_path, box):
                 image_id = name[:4]
                 os.makedirs(os.path.join(dst_path, image_id), exist_ok=True)
                 bbox = get_bbox(rotatedImg)
-                rects = gen_rect((bbox[0], bbox[1]), (bbox[2], bbox[3]), rotatedImg.shape[1], rotatedImg.shape[0], 5)
+                rects = gen_rect((bbox[0], bbox[1]), (bbox[2], bbox[3]), rotatedImg.shape[1], rotatedImg.shape[0], 2)
                 for i, rect in enumerate(rects):
                     img_ = cv2.resize(rotatedImg[rect[1]:rect[3], rect[0]:rect[2]], (box, box))
                     out_name = os.path.basename(name)[0:-4] + '_%d_%d.jpg' % (angle, i)
@@ -190,7 +190,7 @@ if __name__ == '__main__':
     os.makedirs(train_sample, exist_ok=True)
     os.makedirs(val_sample, exist_ok=True)
 
-    #train_val_test_split(datapath, train_path, val_path, test_path)
+    train_val_test_split(datapath, train_path, val_path, test_path)
 
     gen_sample(train_path, train_sample, 224)
     gen_sample(val_path, val_sample, 224)
