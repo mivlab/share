@@ -5,17 +5,14 @@ import os
 import numpy as np
 import ellipses
 import random
-
+#原图resize，使目标为指定大小，并保存矩形框信息
 if __name__ == '__main__':
     root = r'F:\data\mine\web' #原图
     outDir = r'F:\data\mine\web_fixsize' #前景图
-    bgDir = r'F:\data\uav\neg' # 背景图目录
-    trainDir = r'F:\data\mine\train' # 训练图
     fixsize = [16, 32] # 目标大小范围
     trainSize = 416 #输出的训练图像大小
 
     os.makedirs(outDir, exist_ok=True)
-    os.makedirs(trainDir, exist_ok=True)
 
     show_scale = 1
     for file in os.listdir(root):
