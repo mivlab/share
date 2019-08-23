@@ -40,16 +40,20 @@ if __name__ == '__main__':
                 y1 = (bgImg.shape[0] - fgImg.shape[0]) // 2
                 x1 = (bgImg.shape[1] - fgImg.shape[1]) // 2
                 bgImg[y1:y1+fgImg.shape[0], x1:x1+fgImg.shape[1], :] = fgImg # 两图叠加
-                name = os.path.join(trainImgDir, '%s_%d_%d_%s' %(file, row, col, fgFiles[fgIndex]))
+                trainImgName = '%s_%d_%d_%s' %(file, row, col, fgFiles[fgIndex])
+                name = os.path.join(trainImgDir, trainImgName)
                 cv2.imwrite(name, bgImg)
 
                 filename, ext = os.path.splitext(fgFiles[fgIndex])
                 flabel = open(os.path.join(fgDir, filename + '.txt'), 'r')
                 annot = flabel.readline().strip().split(' ')
-                outFile = open(os.path.join(trainLabelDir, os.path.splitext(name)[0] + '.txt'), 'w')
+                flabel.close()
+                outLableName = os.path.join(trainLabelDir, os.path.splitext(trainImgName)[0] + '.txt')
+                outFile = open(outLableName, 'w')
                 cx = (float(annot[1]) + float(annot[3])) / 2 + x1
                 cy = (float(annot[2]) + float(annot[4])) / 2 + y1
                 width = float(annot[3]) - float(annot[1]) + 1
                 height = float(annot[4]) - float(annot[2]) + 1
                 outFile.write('0 %f %f %f %f\n' % (cx / bgImg.shape[1], cy / bgImg.shape[0], width / bgImg.shape[1], height / bgImg.shape[0]))
                 fgIndex = (fgIndex + 1) % len(fgFiles)
+                outFile.close()

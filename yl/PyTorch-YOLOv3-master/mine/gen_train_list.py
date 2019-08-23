@@ -1,6 +1,6 @@
 import os
 
-root = r'G:\proj\retrieval\share\yl\PyTorch-YOLOv3-master\data\custom\images'
+root = r'F:\data\mine\train'
 path_prefix = r'data\custom\images'
 
 train_txt = open('../data/custom/train.txt', 'w')
