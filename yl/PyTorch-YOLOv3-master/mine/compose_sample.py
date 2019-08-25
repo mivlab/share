@@ -2,14 +2,15 @@
 import cv2
 import os
 import numpy as np
-
+import random
+import config
 
 if __name__ == '__main__':
-    fgDir = r'F:\data\mine\web_fixsize' #前景图
-    bgDir = r'F:\data\uav\neg' # 背景图目录
-    trainImgDir = r'F:\data\mine\images' # 训练图. yolov3程序要求目录名为images和labels
-    trainLabelDir = r'F:\data\mine\labels' # 训练标签
-    trainSize = 416 #输出的训练图像大小
+    fgDir = config.fgDir
+    bgDir = config.bgDir
+    trainImgDir = config.trainImgDir
+    trainLabelDir = config.trainLabelDir
+    trainSize = config.trainSize
 
     os.makedirs(trainImgDir, exist_ok=True)
     os.makedirs(trainLabelDir, exist_ok=True)
@@ -32,13 +33,14 @@ if __name__ == '__main__':
         # 遍历背景图
         for row in range(0, h - trainSize, step):
             for col in range(0, w - trainSize, step):
-                bgImg = img[row:row + trainSize, col:col + trainSize, :]
+                bgImg = img[row:row + trainSize, col:col + trainSize, :].copy()
                 fgImg = cv2.imread(os.path.join(fgDir, fgFiles[fgIndex]))
-                if bgImg.shape[0] - fgImg.shape[0] < 0 or bgImg.shape[1] - fgImg.shape[1] < 0:
+                margin_ = 1
+                if bgImg.shape[0] - fgImg.shape[0] - margin_ * 2 < 0 or bgImg.shape[1] - fgImg.shape[1] - margin_ * 2 < 0:
                     print('%s is too large' % fgFiles[fgIndex])
                     continue
-                y1 = (bgImg.shape[0] - fgImg.shape[0]) // 2
-                x1 = (bgImg.shape[1] - fgImg.shape[1]) // 2
+                y1 = random.randint(margin_, bgImg.shape[0] - fgImg.shape[0] - margin_)
+                x1 = random.randint(margin_, bgImg.shape[1] - fgImg.shape[1] - margin_)
                 bgImg[y1:y1+fgImg.shape[0], x1:x1+fgImg.shape[1], :] = fgImg # 两图叠加
                 trainImgName = '%s_%d_%d_%s' %(os.path.splitext(file)[0], row, col, fgFiles[fgIndex])
                 name = os.path.join(trainImgDir, trainImgName)
