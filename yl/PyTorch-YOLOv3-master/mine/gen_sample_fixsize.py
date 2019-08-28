@@ -70,11 +70,12 @@ if __name__ == '__main__':
             y2 = int(y2 * r)
             name_ = os.path.join(outDir, '%s_%d.jpg' % (filename, i))
             outTxt = open(os.path.join(outDir, '%s_%d.txt' % (filename, i)), 'w')
-            if objectNum == 1: # 只有一个物体，存整张图
+            # 只有一个物体，并且图像较小，存整张图
+            if objectNum == 1 and outImg.shape[0] < trainSize / 2 and outImg.shape[1] < trainSize / 2:
                 outTxt.write('0 %f %f %f %f\n' % (x1, y1, x2, y2))
                 cv2.imwrite(name_, outImg)
-            else: # 有多个物体，存为多个文件
-                m = random.randint(2, 6)
+            else: # 有多个物体，或图像较大，截小之后分别保存
+                m = random.randint(2, 6) #不能太大，会把其他目标包含进来
                 x11 = max(x1 - m, 0)
                 x22 = min(x2 + m, outImg.shape[1] - 1)
                 y11 = max(y1 - m, 0)
